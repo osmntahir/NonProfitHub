@@ -1,0 +1,30 @@
+ÖDEV PROJE:
+
+Projenin Git altyapısını kullanan bir Source Control sisteminde teslim edilmesi beklenmektedir.
+Proje süresi ortalama 1 haftadır.
+PROJE KONUSU:
+Bir Derneğin web sitesindeki Haberler ve Duyuruların dinamik olarak girişini yapılacağı ekranlar ve web sitesinde bunların yayınlanması.
+Admin ekranı 2 adet;
+Haberler Giriş/Güncelleme/Silme ekranı
+Duyurular Giriş/Güncelleme/Silme ekranı
+Kullanıcı ekranı 2 adet;
+	Haberler Listeleme ekranı, tek haber tıklanınca popupta detay gösterilecek
+	Duyurular Listeleme ekranı
+
+Kullanılacak Teknolojiler:
+•	Programlama: Java
+•	BackEnd Framework: SpringBoot
+•	ORM: Hibernate
+•	Database: PostgreSql
+•	Frontend Framework: React, Angular benzeri TypeScript kullanan bir framework.
+
+Kullanılması Beklenen Durumlar:
+•	Haberler ve Duyurular entityleri tek bir Etkinlik entity’sinden extend etmeli ve tek bir DB tablosunda tutulmalı.
+Etkinlik (Base Entity): id, konu, icerik, gecerlilikTarihi
+Haberler: haberLinki
+Duyurular: resim (file sistemde tutulmalı)
+
+•	En az bir adet DesignPattern kullanılmalı.
+
+
+
