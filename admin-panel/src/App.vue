@@ -1,47 +1,60 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <ul>
+        <li @click="goToPage('news')">Haberler</li>
+        <li @click="goToPage('announcements')">Duyurular</li>
+      </ul>
+    </aside>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <router-view></router-view>
+    </main>
+  </div>
 </template>
 
+<script>
+export default {
+  methods: {
+    goToPage(page) {
+      this.$router.push(`/${page}`);
+    }
+  }
+};
+</script>
+
 <style scoped>
-header {
-  line-height: 1.5;
+.app-container {
+  display: flex;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.sidebar {
+  width: 200px;
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+.sidebar li {
+  margin: 20px 0;
+  cursor: pointer;
+  color: white;
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.main-content {
+  margin-left: 220px;
+  padding: 20px;
+  width: calc(100% - 220px);
 }
 </style>
