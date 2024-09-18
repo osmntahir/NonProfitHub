@@ -19,7 +19,7 @@
         <td>{{ announcement.content }}</td>
         <td>{{ announcement.validityDate }}</td>
         <td>
-          <img :src="announcement.imagePath" alt="Duyuru Resmi" class="announcement-image" v-if="announcement.imagePath" />
+          <img v-if="announcement.imagePath" :src="getImageUrl(announcement.imagePath)" alt="Duyuru Resmi" class="announcement-image" />
         </td>
         <td>
           <button @click="openUpdatePopup(announcement)">Güncelle</button>
@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { getAllAnnouncements, addAnnouncement, updateAnnouncement, deleteAnnouncement } from '../api/announcementApi.js'; ;
+import { getAllAnnouncements, addAnnouncement, updateAnnouncement, deleteAnnouncement } from '../api/announcementApi.js';
 
 export default {
   data() {
@@ -77,16 +77,14 @@ export default {
     };
   },
   mounted() {
-    // Sayfa açıldığında tüm duyuruları yükle
     this.loadAnnouncements();
   },
   methods: {
     async loadAnnouncements() {
       try {
-        const response = await getAllAnnouncements();
-        this.announcements = response;
+        this.announcements = await getAllAnnouncements();
       } catch (error) {
-        console.error('Error loading announcements:', error);
+        console.error('Error fetching announcements:', error);
       }
     },
     openAddAnnouncementPopup() {
@@ -96,21 +94,32 @@ export default {
     },
     openUpdatePopup(announcement) {
       this.isUpdate = true;
-      this.popupData = { ...announcement };
+      this.popupData = { ...announcement, image: null }; // Reset image
       this.showPopup = true;
     },
     handleFileUpload(event) {
       const file = event.target.files[0];
-      this.popupData.image = file; // Dosya objesini sakla
+      this.popupData.image = file; // Store file object
     },
     async saveAnnouncement() {
+      const formData = new FormData();
+      formData.append('announcement', new Blob([JSON.stringify({
+        subject: this.popupData.subject,
+        content: this.popupData.content,
+        validityDate: this.popupData.validityDate
+      })], { type: 'application/json' }));
+
+      if (this.popupData.image) {
+        formData.append('image', this.popupData.image);
+      }
+
       try {
         if (this.isUpdate) {
-          await updateAnnouncement(this.popupData.id, this.popupData);
+          await updateAnnouncement(this.popupData.id, formData);
         } else {
-          await addAnnouncement(this.popupData);
+          await addAnnouncement(formData);
         }
-        this.loadAnnouncements(); // İşlemden sonra duyuruları güncelle
+        this.loadAnnouncements();
         this.closePopup();
       } catch (error) {
         console.error('Error saving announcement:', error);
@@ -119,13 +128,16 @@ export default {
     async deleteAnnouncement(id) {
       try {
         await deleteAnnouncement(id);
-        this.loadAnnouncements(); // Silmeden sonra duyuruları güncelle
+        await this.loadAnnouncements();
       } catch (error) {
         console.error('Error deleting announcement:', error);
       }
     },
     closePopup() {
       this.showPopup = false;
+    },
+    getImageUrl(imagePath) {
+      return `http://localhost:8080/${imagePath}`;
     }
   }
 };
@@ -193,5 +205,10 @@ table th, table td {
   display: flex;
   justify-content: space-between;
   margin-top: 20px
+}
+
+.announcement-image {
+  width: 100px;
+  height: auto;
 }
 </style>
