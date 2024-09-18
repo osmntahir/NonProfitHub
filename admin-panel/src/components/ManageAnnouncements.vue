@@ -49,6 +49,7 @@
           <label>Resim Yükle</label>
           <input type="file" @change="handleFileUpload" />
         </div>
+        <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
         <div class="form-actions">
           <button @click="saveAnnouncement">{{ isUpdate ? 'Güncelle' : 'Ekle' }}</button>
           <button @click="closePopup">İptal</button>
@@ -73,7 +74,8 @@ export default {
         content: '',
         validityDate: '',
         image: null
-      }
+      },
+      errorMessage: ''
     };
   },
   mounted() {
@@ -89,13 +91,15 @@ export default {
     },
     openAddAnnouncementPopup() {
       this.isUpdate = false;
-      this.popupData = { id: null, subject: '', content: '', validityDate: '', image: null };
+      this.popupData = {id: null, subject: '', content: '', validityDate: '', image: null};
       this.showPopup = true;
+      this.errorMessage = '';
     },
     openUpdatePopup(announcement) {
       this.isUpdate = true;
-      this.popupData = { ...announcement, image: null }; // Reset image
+      this.popupData = {...announcement, image: null}; // Reset image
       this.showPopup = true;
+      this.errorMessage = '';
     },
     handleFileUpload(event) {
       const file = event.target.files[0];
@@ -107,7 +111,7 @@ export default {
         subject: this.popupData.subject,
         content: this.popupData.content,
         validityDate: this.popupData.validityDate
-      })], { type: 'application/json' }));
+      })], {type: 'application/json'}));
 
       if (this.popupData.image) {
         formData.append('image', this.popupData.image);
@@ -122,13 +126,14 @@ export default {
         this.loadAnnouncements();
         this.closePopup();
       } catch (error) {
-        console.error('Error saving announcement:', error);
+        const errorData = JSON.parse(error.message);
+        this.errorMessage = Object.values(errorData).join(', ');
       }
     },
     async deleteAnnouncement(id) {
       try {
         await deleteAnnouncement(id);
-        await this.loadAnnouncements();
+        this.loadAnnouncements();
       } catch (error) {
         console.error('Error deleting announcement:', error);
       }
@@ -205,6 +210,11 @@ table th, table td {
   display: flex;
   justify-content: space-between;
   margin-top: 20px
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
 }
 
 .announcement-image {

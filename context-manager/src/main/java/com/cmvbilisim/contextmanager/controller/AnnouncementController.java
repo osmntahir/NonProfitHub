@@ -2,13 +2,12 @@ package com.cmvbilisim.contextmanager.controller;
 
 import com.cmvbilisim.contextmanager.model.Announcement;
 import com.cmvbilisim.contextmanager.service.AnnouncementService;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 @RestController
@@ -31,36 +30,29 @@ public class AnnouncementController {
     }
 
     @PostMapping
-    public ResponseEntity<Announcement> addAnnouncement(
+    public ResponseEntity<?> addAnnouncement(
             @RequestPart("announcement") Announcement announcement,
             @RequestPart(value = "image", required = false) MultipartFile image) {
-
         try {
             Announcement savedAnnouncement = announcementService.saveAnnouncementWithImage(announcement, image);
             return ResponseEntity.ok(savedAnnouncement);
         } catch (ConstraintViolationException e) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Announcement> updateAnnouncement(
+    public ResponseEntity<?> updateAnnouncement(
             @PathVariable Long id,
             @RequestPart("announcement") Announcement announcement,
             @RequestPart(value = "image", required = false) MultipartFile image) {
-
         try {
             Announcement updatedAnnouncement = announcementService.updateAnnouncementWithImage(id, announcement, image);
             return ResponseEntity.ok(updatedAnnouncement);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
         } catch (ConstraintViolationException e) {
-            return ResponseEntity.badRequest().body(null);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(500).body(null);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAnnouncement(@PathVariable Long id) {
@@ -73,5 +65,4 @@ public class AnnouncementController {
             return ResponseEntity.status(500).build();
         }
     }
-
 }

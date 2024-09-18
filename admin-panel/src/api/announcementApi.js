@@ -11,7 +11,6 @@ export const getAllAnnouncements = async () => {
         throw error;
     }
 };
-
 export const addAnnouncement = async (formData) => {
     try {
         const response = await axios.post(API_URL, formData, {
@@ -21,7 +20,9 @@ export const addAnnouncement = async (formData) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error adding announcement:', error);
+        if (error.response && error.response.data) {
+            throw new Error(error.response.data.message || JSON.stringify(error.response.data));
+        }
         throw error;
     }
 };
@@ -35,7 +36,9 @@ export const updateAnnouncement = async (id, formData) => {
         });
         return response.data;
     } catch (error) {
-        console.error(`Error updating announcement with id ${id}:`, error);
+        if (error.response && error.response.data) {
+            throw new Error(error.response.data.message || JSON.stringify(error.response.data));
+        }
         throw error;
     }
 };
