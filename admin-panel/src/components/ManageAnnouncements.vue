@@ -59,13 +59,12 @@
 </template>
 
 <script>
+import { getAllAnnouncements, addAnnouncement, updateAnnouncement, deleteAnnouncement } from '../api/announcementApi.js'; ;
+
 export default {
   data() {
     return {
-      announcements: [
-        { id: 1, subject: "Duyuru 1", content: "Duyuru içeriği 1", validityDate: "2024-12-31", imagePath: "http://localhost:8080/images/duyuru1.jpg" },
-        { id: 2, subject: "Duyuru 2", content: "Duyuru içeriği 2", validityDate: "2024-11-30", imagePath: "http://localhost:8080/images/duyuru2.jpg" },
-      ],
+      announcements: [],
       showPopup: false,
       isUpdate: false,
       popupData: {
@@ -77,7 +76,19 @@ export default {
       }
     };
   },
+  mounted() {
+    // Sayfa açıldığında tüm duyuruları yükle
+    this.loadAnnouncements();
+  },
   methods: {
+    async loadAnnouncements() {
+      try {
+        const response = await getAllAnnouncements();
+        this.announcements = response;
+      } catch (error) {
+        console.error('Error loading announcements:', error);
+      }
+    },
     openAddAnnouncementPopup() {
       this.isUpdate = false;
       this.popupData = { id: null, subject: '', content: '', validityDate: '', image: null };
@@ -92,18 +103,26 @@ export default {
       const file = event.target.files[0];
       this.popupData.image = file; // Dosya objesini sakla
     },
-    saveAnnouncement() {
-      if (this.isUpdate) {
-        const index = this.announcements.findIndex(a => a.id === this.popupData.id);
-        this.announcements[index] = { ...this.popupData };
-      } else {
-        this.popupData.id = this.announcements.length + 1; // Fake ID for now
-        this.announcements.push({ ...this.popupData });
+    async saveAnnouncement() {
+      try {
+        if (this.isUpdate) {
+          await updateAnnouncement(this.popupData.id, this.popupData);
+        } else {
+          await addAnnouncement(this.popupData);
+        }
+        this.loadAnnouncements(); // İşlemden sonra duyuruları güncelle
+        this.closePopup();
+      } catch (error) {
+        console.error('Error saving announcement:', error);
       }
-      this.closePopup();
     },
-    deleteAnnouncement(id) {
-      this.announcements = this.announcements.filter(a => a.id !== id);
+    async deleteAnnouncement(id) {
+      try {
+        await deleteAnnouncement(id);
+        this.loadAnnouncements(); // Silmeden sonra duyuruları güncelle
+      } catch (error) {
+        console.error('Error deleting announcement:', error);
+      }
     },
     closePopup() {
       this.showPopup = false;
@@ -173,6 +192,6 @@ table th, table td {
 .form-actions {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  margin-top: 20px
 }
 </style>
