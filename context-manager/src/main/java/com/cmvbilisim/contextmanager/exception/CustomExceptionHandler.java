@@ -27,7 +27,11 @@ public class CustomExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Map<String, String>> handleConstraintViolationException(ConstraintViolationException ex) {
         Map<String, String> errors = new HashMap<>();
-        errors.put("error", ex.getMessage());
+        ex.getConstraintViolations().forEach(violation -> {
+            String fieldName = violation.getPropertyPath().toString();
+            String errorMessage = violation.getMessage();
+            errors.put(fieldName, errorMessage);
+        });
         return ResponseEntity.badRequest().body(errors);
     }
 

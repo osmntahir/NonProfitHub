@@ -126,8 +126,14 @@ export default {
         this.loadAnnouncements();
         this.closePopup();
       } catch (error) {
-        const errorData = JSON.parse(error.message);
-        this.errorMessage = Object.values(errorData).join(', ');
+        let errorData;
+        try {
+          errorData = JSON.parse(error.message);
+        } catch (e) {
+          errorData = { error: error.message };
+        }
+        this.errorMessage = Object.values(errorData).join("");
+
       }
     },
     async deleteAnnouncement(id) {
