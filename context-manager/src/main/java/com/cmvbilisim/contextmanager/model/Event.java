@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "event_type", discriminatorType = DiscriminatorType.STRING)
