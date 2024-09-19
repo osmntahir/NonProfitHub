@@ -113,7 +113,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         if (announcement.getContent() == null || announcement.getContent().isEmpty()) {
             throw new ConstraintViolationException("İçerik gereklidir", null);
         }
-        if (announcement.getValidityDate() == null || announcement.getValidityDate().before(java.sql.Date.valueOf(LocalDate.now()))) {
+        if (announcement.getValidityDate() == null || announcement.getValidityDate().isBefore(LocalDate.now())) {
             throw new ConstraintViolationException("Geçerlilik Tarihi gereklidir ve gelecekte bir tarih olmalıdır", null);
         }
     }

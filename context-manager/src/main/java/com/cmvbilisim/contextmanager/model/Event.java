@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -21,5 +22,5 @@ public abstract class Event {
 
     private String subject;
     private String content;
-    private Date validityDate;
+    private LocalDate validityDate;
 }
