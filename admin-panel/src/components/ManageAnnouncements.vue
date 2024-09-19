@@ -15,8 +15,8 @@
       </thead>
       <tbody>
       <tr v-for="announcement in announcements" :key="announcement.id">
-        <td>{{ announcement.subject }}</td>
-        <td>{{ announcement.content }}</td>
+        <td class="subject-cell">{{ announcement.subject }}</td>
+        <td class="content-cell">{{ announcement.content }}</td>
         <td>{{ announcement.validityDate }}</td>
         <td>
           <img v-if="announcement.imagePath" :src="getImageUrl(announcement.imagePath)" alt="Duyuru Resmi" class="announcement-image" />
@@ -166,7 +166,7 @@ export default {
         isValid = false;
       }
 
-      // Check if validity date is empty or invalid
+
       if (!this.popupData.validityDate) {
         this.formErrors.validityDate = 'Geçerlilik Tarihi gereklidir';
         isValid = false;
@@ -224,6 +224,18 @@ table th, table td {
   border: 1px solid #ddd;
   padding: 10px;
   text-align: left;
+}
+
+.subject-cell {
+  max-width: 120px;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.content-cell {
+  max-width: 200px;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .announcement-image {
