@@ -17,7 +17,14 @@ public class NewsController {
 
     @GetMapping
     public ResponseEntity<List<News>> getAllNews() {
+
         return ResponseEntity.ok(newsService.getAllNews());
+    }
+
+    @GetMapping("/valid")
+    public ResponseEntity<List<News>> getValidNews() {
+        List<News> news = newsService.getValidNews();
+        return ResponseEntity.ok(news);
     }
 
     @GetMapping("/{id}")

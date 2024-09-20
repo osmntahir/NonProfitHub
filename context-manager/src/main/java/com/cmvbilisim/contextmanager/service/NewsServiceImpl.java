@@ -5,6 +5,7 @@ import com.cmvbilisim.contextmanager.repository.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,5 +45,11 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public void deleteNews(Long id) {
         newsRepository.deleteById(id);
+    }
+
+    @Override
+    public List<News> getValidNews() {
+        LocalDate today = LocalDate.now();
+        return newsRepository.findByValidityDateGreaterThanEqual(today);
     }
 }
