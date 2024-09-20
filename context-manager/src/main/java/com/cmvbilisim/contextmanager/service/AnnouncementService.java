@@ -23,4 +23,6 @@ public interface AnnouncementService {
     Announcement saveAnnouncementWithImage(Announcement announcement, MultipartFile image);
 
     Announcement updateAnnouncementWithImage(Long id, Announcement announcement, MultipartFile image);
+
+    List<Announcement> getValidAnnouncements();
 }

@@ -105,6 +105,12 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         }
     }
 
+    @Override
+    public List<Announcement> getValidAnnouncements() {
+        LocalDate today = LocalDate.now();
+        return announcementRepository.findByValidityDateGreaterThanEqual(today);
+    }
+
 
     private void validateAnnouncement(Announcement announcement) {
         if (announcement.getSubject() == null || announcement.getSubject().isEmpty()) {

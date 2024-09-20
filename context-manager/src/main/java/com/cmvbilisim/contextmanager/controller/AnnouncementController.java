@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/announcement")
@@ -20,6 +21,13 @@ public class AnnouncementController {
     @GetMapping
     public ResponseEntity<List<Announcement>> getAllAnnouncements() {
         return ResponseEntity.ok(announcementService.getAllAnnouncements());
+    }
+    @GetMapping("/valid")
+    public ResponseEntity<List<Announcement>> getValidAnnouncements() {
+
+        List<Announcement> announcements = announcementService.getValidAnnouncements();
+
+        return ResponseEntity.ok(announcements);
     }
 
     @GetMapping("/{id}")
