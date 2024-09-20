@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -20,7 +19,11 @@ public abstract class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String subject;
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
+
+    @Column(name = "subject", columnDefinition = "TEXT")
+    private String subject;
+
     private LocalDate validityDate;
 }
