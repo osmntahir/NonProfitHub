@@ -32,7 +32,7 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public News saveNews(News news) {
         News savedNews = newsRepository.save(news);
-        String newsLink = "http://127.0.0.1:5173/news/" + savedNews.getId();
+        String newsLink = "/news/" + savedNews.getId();
         savedNews.setNewsLink(newsLink);
         return newsRepository.save(news);
     }
