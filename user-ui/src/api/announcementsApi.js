@@ -4,7 +4,7 @@ const API_URL = 'http://localhost:8080/api/announcement';
 
 export const getAllAnnouncements = async () => {
     try {
-        const response = await axios.get(API_URL);
+        const response = await axios.get(`${API_URL}/valid`);
         return response.data;
     } catch (error) {
         console.error('Error fetching announcements:', error);
