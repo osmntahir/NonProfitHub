@@ -16,7 +16,7 @@
       <tbody>
       <tr v-for="news in newsList" :key="news.id">
         <td>{{ news.subject }}</td>
-        <td>{{ news.content }}</td>
+        <td class="content-column">{{ news.content }}</td>
         <td>{{ news.validityDate }}</td>
         <td><a :href="news.newsLink" target="_blank">{{ news.newsLink }}</a></td>
         <td>
@@ -49,12 +49,6 @@
           <!-- Show error message for validity date -->
           <div v-if="formErrors.validityDate" class="error-message">{{ formErrors.validityDate }}</div>
         </div>
-        <div class="form-group">
-          <label>Haber Linki</label>
-          <input v-model="popupData.newsLink" placeholder="Haber Linki" />
-          <!-- Show error message for newsLink -->
-          <div v-if="formErrors.newsLink" class="error-message">{{ formErrors.newsLink }}</div>
-        </div>
         <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
         <div class="form-actions">
           <button @click="saveNews" class="save-button">{{ isUpdate ? 'Güncelle' : 'Ekle' }}</button>
@@ -78,15 +72,13 @@ export default {
         id: null,
         subject: '',
         content: '',
-        validityDate: '',
-        newsLink: ''
+        validityDate: ''
       },
       errorMessage: '',
       formErrors: {
         subject: '',
         content: '',
-        validityDate: '',
-        newsLink: ''
+        validityDate: ''
       }
     };
   },
@@ -103,7 +95,7 @@ export default {
     },
     openAddNewsPopup() {
       this.isUpdate = false;
-      this.popupData = { id: null, subject: '', content: '', validityDate: '', newsLink: '' };
+      this.popupData = { id: null, subject: '', content: '', validityDate: '' };
       this.showPopup = true;
       this.errorMessage = '';
       this.clearFormErrors();
@@ -126,7 +118,6 @@ export default {
         subject: this.popupData.subject,
         content: this.popupData.content,
         validityDate: this.popupData.validityDate,
-        newsLink: this.popupData.newsLink
       };
 
       try {
@@ -165,15 +156,10 @@ export default {
         isValid = false;
       }
 
-      if (!this.popupData.newsLink) {
-        this.formErrors.newsLink = 'Haber linki gereklidir';
-        isValid = false;
-      }
-
       return isValid;
     },
     clearFormErrors() {
-      this.formErrors = { subject: '', content: '', validityDate: '', newsLink: '' };
+      this.formErrors = { subject: '', content: '', validityDate: '' };
     },
     async deleteNews(id) {
       try {
@@ -219,6 +205,10 @@ table th, table td {
   word-wrap: break-word;
   max-width: 200px;
   white-space: normal;
+}
+
+.content-column {
+  max-width: 400px;
 }
 
 .popup {
