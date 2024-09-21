@@ -5,6 +5,7 @@ import com.cmvbilisim.contextmanager.repository.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -39,9 +40,32 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public News updateNews(Long id, News news) {
-        return newsRepository.save(news);
+
+        News existingNews = newsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("News not found with id: " + id));
+
+
+        validateNews(news);
+
+        // Update the properties of the existing news
+        existingNews.setSubject(news.getSubject());
+        existingNews.setContent(news.getContent());
+        existingNews.setValidityDate(news.getValidityDate());
+
+
+        return newsRepository.save(existingNews);
     }
 
+    private void validateNews(News news) {
+        if (news.getSubject() == null || news.getSubject().isEmpty()) {
+            throw new ConstraintViolationException("Konu gereklidir", null);
+        }
+        if (news.getContent() == null || news.getContent().isEmpty()) {
+            throw new ConstraintViolationException("Icerik gereklidir", null);
+        }
+        if (news.getValidityDate() == null || news.getValidityDate().isBefore(LocalDate.now())) {
+            throw new ConstraintViolationException("Gecerlilik tarihi bugun veya gelecekteki bir gun olmalidir", null);
+        }
+    }
     @Override
     public void deleteNews(Long id) {
         newsRepository.deleteById(id);

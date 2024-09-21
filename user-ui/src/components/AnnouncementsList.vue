@@ -1,18 +1,8 @@
 <template>
   <div class="announcements-list">
     <h1>Duyurular</h1>
-    <div
-        v-for="announcement in announcementsList"
-        :key="announcement.id"
-        class="announcement-item"
-    >
-
-      <img
-          v-if="announcement.imagePath"
-          :src="getImageUrl(announcement.imagePath)"
-          alt="Duyuru Resmi"
-          class="announcement-image"
-      />
+    <div v-for="announcement in announcementsList" :key="announcement.id" class="announcement-item">
+      <img v-if="announcement.imagePath" :src="getImageUrl(announcement.imagePath)" alt="Duyuru Resmi" class="announcement-image" />
       <div class="announcement-content" :class="{ 'no-image': !announcement.imagePath }">
         <h2>{{ announcement.subject }}</h2>
         <p>{{ announcement.content }}</p>
@@ -83,7 +73,6 @@ export default {
   object-fit: cover;
 }
 
-
 .announcement-content {
   flex: 1;
   min-width: 0;
@@ -120,6 +109,4 @@ export default {
   margin-right: 8px;
   color: #3498db;
 }
-
-
 </style>

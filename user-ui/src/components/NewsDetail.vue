@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { getNewsById } from '../api/newsApi.js';
+import {getNewsById} from '../api/newsApi.js';
 
 export default {
   data() {
@@ -31,7 +31,6 @@ export default {
 </script>
 
 <style scoped>
-
 .news-container, .error-container {
   max-width: 800px;
   margin: 0 auto;
@@ -42,11 +41,9 @@ export default {
   text-align: center;
 }
 
-
 body {
   font-family: 'Roboto', sans-serif;
 }
-
 
 .news-title {
   font-size: 2.8em;
@@ -55,7 +52,6 @@ body {
   margin-bottom: 30px;
   word-break: break-word;
 }
-
 
 .news-content {
   font-size: 1.6em;
@@ -66,13 +62,11 @@ body {
   word-break: break-word;
 }
 
-
 .news-validity {
   font-size: 1.3em;
   color: #555;
   margin-bottom: 20px;
 }
-
 
 .news-link {
   font-size: 1.3em;
@@ -87,13 +81,10 @@ body {
   color: #0056b3;
 }
 
-
 .error-message {
   font-size: 1.5em;
   color: #ff4d4f;
   text-align: center;
   margin-top: 50px;
 }
-
-
 </style>

@@ -1,15 +1,10 @@
 <template>
   <div class="news-list">
     <h1>Haberler</h1>
-    <div
-        v-for="news in newsList"
-        :key="news.id"
-        class="news-item"
-    >
+    <div v-for="news in newsList" :key="news.id" class="news-item">
       <div class="news-content">
         <h2>{{ news.subject }}</h2>
         <p>{{ getShortContent(news.content) }}...</p>
-        <!-- İki seçenek: Detayı oku veya Habere git -->
         <div class="news-actions">
           <button @click="openModal(news)">Detayı Oku</button>
           <router-link :to="`/news/${news.id}`">Habere Git</router-link>
@@ -17,7 +12,6 @@
       </div>
     </div>
 
-    <!-- Modal: Eğer selectedNews doluysa modal açılır -->
     <div v-if="selectedNews" class="modal-overlay" @click.self="closeModal">
       <div class="modal-content">
         <h2>{{ selectedNews.subject }}</h2>
@@ -40,7 +34,7 @@ export default {
   data() {
     return {
       newsList: [],
-      selectedNews: null, // Seçilen haber modalda gösterilecek
+      selectedNews: null,
     };
   },
   async created() {
@@ -139,7 +133,6 @@ export default {
   background-color: #e67e22;
 }
 
-/* Modal stilleri */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -158,8 +151,8 @@ export default {
   border-radius: 10px;
   width: 80%;
   max-width: 800px;
-  word-break: break-word; /* Metin taşmalarını engellemek için */
-  white-space: normal; /* Uzun kelimeleri bölmek için */
+  word-break: break-word;
+  white-space: normal;
 }
 
 .modal-content h2 {
@@ -187,7 +180,6 @@ export default {
   background-color: #2980b9;
 }
 
-/* Responsive tasarım */
 @media (max-width: 768px) {
   .news-content h2,
   .news-content p {
