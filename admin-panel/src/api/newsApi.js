@@ -1,6 +1,7 @@
-import axios from 'axios';
+// src/api/newsApi.js
+import axios from '@/plugins/axios';
 
-const API_URL = 'http://localhost:8080/api/news'; // Backend'deki news endpoint
+const API_URL = '/news'; // Axios instance'ı baseURL olarak ayarlandı.
 
 export const getAllNews = async () => {
     try {

@@ -1,3 +1,4 @@
+<!-- src/components/ManageNews.vue -->
 <template>
   <div>
     <h1>Haberler</h1>
@@ -17,11 +18,11 @@
       <tr v-for="news in newsList" :key="news.id">
         <td>{{ news.subject }}</td>
         <td class="content-column">{{ news.content }}</td>
-        <td>{{ news.validityDate }}</td>
+        <td>{{ formatDate(news.validityDate) }}</td>
         <td><a :href="news.newsLink" target="_blank">{{ news.newsLink }}</a></td>
         <td>
           <button @click="openUpdatePopup(news)" class="update-button">Güncelle</button>
-          <button @click="deleteNews(news.id)" class="delete-button">Sil</button>
+          <button @click="deleteNewsItem(news.id)" class="delete-button">Sil</button>
         </td>
       </tr>
       </tbody>
@@ -60,7 +61,7 @@
 </template>
 
 <script>
-import { getAllNews, addNews, updateNews, deleteNews } from '../api/newsApi.js';
+import axios from '@/plugins/axios';
 
 export default {
   data() {
@@ -88,9 +89,11 @@ export default {
   methods: {
     async loadNews() {
       try {
-        this.newsList = await getAllNews();
+        const response = await axios.get('/news');
+        this.newsList = response.data;
       } catch (error) {
         this.errorMessage = 'Haberler yüklenirken bir hata oluştu.';
+        console.error(error);
       }
     },
     openAddNewsPopup() {
@@ -122,14 +125,15 @@ export default {
 
       try {
         if (this.isUpdate) {
-          await updateNews(this.popupData.id, newsData);
+          await axios.put(`/news/${this.popupData.id}`, newsData);
         } else {
-          await addNews(newsData);
+          await axios.post('/news', newsData);
         }
         this.loadNews();
         this.closePopup();
       } catch (error) {
-        this.errorMessage = error.message || 'Haber kaydedilirken bir hata oluştu.';
+        this.errorMessage = error.response?.data?.message || 'Haber kaydedilirken bir hata oluştu.';
+        console.error(error);
       }
     },
     validateForm() {
@@ -161,16 +165,22 @@ export default {
     clearFormErrors() {
       this.formErrors = { subject: '', content: '', validityDate: '' };
     },
-    async deleteNews(id) {
+    async deleteNewsItem(id) {
+      if (!confirm('Bu haberi silmek istediğinize emin misiniz?')) return;
       try {
-        await deleteNews(id);
+        await axios.delete(`/news/${id}`);
         this.loadNews();
       } catch (error) {
-        this.errorMessage = `Haber silinirken bir hata oluştu: ${error.message}`;
+        this.errorMessage = `Haber silinirken bir hata oluştu: ${error.response?.data?.message || error.message}`;
+        console.error(error);
       }
     },
     closePopup() {
       this.showPopup = false;
+    },
+    formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('tr-TR');
     }
   }
 };

@@ -1,48 +1,57 @@
+<!-- src/App.vue -->
 <template>
-  <div class="app-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <h1>Admin Panel</h1>
-      </div>
-      <ul>
-        <li @click="goToPage('news')" :class="{ active: isActivePage('news') }">Haberler</li>
-        <li @click="goToPage('announcements')" :class="{ active: isActivePage('announcements') }">Duyurular</li>
-      </ul>
-    </aside>
+  <div>
+    <Navbar />
+    <div class="app-container">
+      <!-- Sidebar -->
+      <aside class="sidebar" v-if="isAuthenticated">
+        <div class="sidebar-header">
+          <h1>Admin Panel</h1>
+        </div>
+        <ul>
+          <li @click="goToPage('news')" :class="{ active: isActivePage('news') }">Haberler</li>
+          <li @click="goToPage('announcements')" :class="{ active: isActivePage('announcements') }">Duyurular</li>
+        </ul>
+      </aside>
 
-    <!-- Main Content Area -->
-    <main class="main-content">
-      <router-view></router-view>
-    </main>
+      <!-- Main Content Area -->
+      <main class="main-content">
+        <router-view></router-view>
+      </main>
+    </div>
   </div>
 </template>
 
 <script>
+import { useAuthStore } from '@/stores/auth';
+import { computed } from 'vue';
+import Navbar from './components/Navbar.vue';
+import { useRouter } from 'vue-router';
+
 export default {
-  methods: {
-    goToPage(page) {
-      this.$router.push(`/${page}`);
-    },
-    isActivePage(page) {
-      return this.$route.path.includes(page);
-    }
-  }
+  components: {
+    Navbar,
+  },
+  setup() {
+    const authStore = useAuthStore();
+    const router = useRouter();
+
+    const isAuthenticated = computed(() => authStore.isAuthenticated);
+
+    const goToPage = (page) => {
+      router.push(`/${page}`);
+    };
+
+    const isActivePage = (page) => {
+      return router.currentRoute.value.path.includes(page);
+    };
+
+    return { isAuthenticated, goToPage, isActivePage };
+  },
 };
 </script>
 
 <style scoped>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-  overflow-x: hidden;
-}
-
 .app-container {
   display: flex;
   min-height: 100vh;
@@ -55,9 +64,9 @@ html, body {
   color: #fff;
   padding: 20px;
   position: fixed;
-  top: 0;
+  top: 60px; /* Navbar yüksekliği */
   left: 0;
-  height: 100%;
+  height: calc(100% - 60px);
   display: flex;
   flex-direction: column;
 }
@@ -70,7 +79,7 @@ html, body {
 }
 
 .sidebar-header {
-  margin-bottom: 60px; /* Increased margin to push the list down */
+  margin-bottom: 60px; /* Listeleri aşağıya itmek için margin arttırıldı */
   text-align: center;
 }
 
@@ -81,17 +90,17 @@ html, body {
   flex-grow: 1;
 }
 
-
 .sidebar li {
   font-size: 1.2em;
-  margin: 10px 0; /* Added margin to separate the list items further */
+  margin: 10px 0; /* Liste elemanları arasına boşluk ekledi */
   cursor: pointer;
   padding: 10px 20px;
   border-radius: 6px;
   transition: background-color 0.3s ease;
 }
 
-.sidebar li:hover, .sidebar li.active {
+.sidebar li:hover,
+.sidebar li.active {
   background-color: #3fc380;
 }
 
@@ -100,7 +109,7 @@ html, body {
   padding: 20px;
   background-color: #f0f2f5;
   width: calc(100% - 250px);
-  height: 100vh;
+  height: calc(100vh - 60px);
   overflow-y: auto;
 }
 
