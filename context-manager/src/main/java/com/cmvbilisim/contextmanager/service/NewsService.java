@@ -1,20 +1,16 @@
+
 package com.cmvbilisim.contextmanager.service;
 
-import com.cmvbilisim.contextmanager.model.News;
+import com.cmvbilisim.contextmanager.dto.NewsDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface NewsService {
-    List<News> getAllNews();
-
-    Optional<News> getNewsById(Long id);
-
-    News saveNews(News news);
-
-    News updateNews(Long id, News news);
-
+    List<NewsDTO> getAllNews();
+    Optional<NewsDTO> getNewsById(Long id);
+    NewsDTO saveNews(NewsDTO newsDTO);
+    NewsDTO updateNews(Long id, NewsDTO newsDTO);
     void deleteNews(Long id);
-
-    List<News> getValidNews();
+    List<NewsDTO> getValidNews();
 }

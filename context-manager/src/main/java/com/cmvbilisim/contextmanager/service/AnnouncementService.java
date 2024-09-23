@@ -1,28 +1,17 @@
+
 package com.cmvbilisim.contextmanager.service;
 
-
-import com.cmvbilisim.contextmanager.model.Announcement;
+import com.cmvbilisim.contextmanager.dto.AnnouncementDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface AnnouncementService {
-    
-   // Announcement saveAnnouncement(Announcement announcement);
-
-    //Announcement updateAnnouncement(Long id, Announcement announcement);
-
+    List<AnnouncementDTO> getAllAnnouncements();
+    AnnouncementDTO saveAnnouncementWithImage(AnnouncementDTO announcementDTO, MultipartFile image);
+    AnnouncementDTO updateAnnouncementWithImage(Long id, AnnouncementDTO announcementDTO, MultipartFile image);
+    List<AnnouncementDTO> getValidAnnouncements();
+    Optional<AnnouncementDTO> getAnnouncementById(Long id);
     void deleteAnnouncement(Long id);
-
-
-    Optional<Announcement> getAnnouncementById(Long id);
-
-    List<Announcement> getAllAnnouncements();
-
-    Announcement saveAnnouncementWithImage(Announcement announcement, MultipartFile image);
-
-    Announcement updateAnnouncementWithImage(Long id, Announcement announcement, MultipartFile image);
-
-    List<Announcement> getValidAnnouncements();
 }

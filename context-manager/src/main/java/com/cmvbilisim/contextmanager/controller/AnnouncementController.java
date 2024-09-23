@@ -1,6 +1,7 @@
+
 package com.cmvbilisim.contextmanager.controller;
 
-import com.cmvbilisim.contextmanager.model.Announcement;
+import com.cmvbilisim.contextmanager.dto.AnnouncementDTO;
 import com.cmvbilisim.contextmanager.service.AnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,59 +12,69 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api/announcement")
 public class AnnouncementController {
 
+    private final AnnouncementService announcementService;
+
     @Autowired
-    private AnnouncementService announcementService;
+    public AnnouncementController(AnnouncementService announcementService) {
+        this.announcementService = announcementService;
+    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<Announcement>> getAllAnnouncements() {
+    public ResponseEntity<List<AnnouncementDTO>> getAllAnnouncements() {
         return ResponseEntity.ok(announcementService.getAllAnnouncements());
     }
 
     @GetMapping("/valid")
-    public ResponseEntity<List<Announcement>> getValidAnnouncements() {
-
-        List<Announcement> announcements = announcementService.getValidAnnouncements();
-
+    public ResponseEntity<List<AnnouncementDTO>> getValidAnnouncements() {
+        List<AnnouncementDTO> announcements = announcementService.getValidAnnouncements();
         return ResponseEntity.ok(announcements);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Announcement> getAnnouncementById(@PathVariable Long id) {
+    public ResponseEntity<AnnouncementDTO> getAnnouncementById(@PathVariable Long id) {
         return announcementService.getAnnouncementById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
+    @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<?> addAnnouncement(
-            @RequestPart("announcement") Announcement announcement,
+            @RequestPart("announcement") AnnouncementDTO announcementDTO,
             @RequestPart(value = "image", required = false) MultipartFile image) {
         try {
-            Announcement savedAnnouncement = announcementService.saveAnnouncementWithImage(announcement, image);
+            AnnouncementDTO savedAnnouncement = announcementService.saveAnnouncementWithImage(announcementDTO, image);
             return ResponseEntity.ok(savedAnnouncement);
         } catch (ConstraintViolationException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(500).body(e.getMessage());
         }
     }
+
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
     public ResponseEntity<?> updateAnnouncement(
             @PathVariable Long id,
-            @RequestPart("announcement") Announcement announcement,
+            @RequestPart("announcement") AnnouncementDTO announcementDTO,
             @RequestPart(value = "image", required = false) MultipartFile image) {
         try {
-            Announcement updatedAnnouncement = announcementService.updateAnnouncementWithImage(id, announcement, image);
+            AnnouncementDTO updatedAnnouncement = announcementService.updateAnnouncementWithImage(id, announcementDTO, image);
             return ResponseEntity.ok(updatedAnnouncement);
         } catch (ConstraintViolationException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(500).body(e.getMessage());
         }
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAnnouncement(@PathVariable Long id) {
