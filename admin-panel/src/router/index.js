@@ -7,7 +7,7 @@ import { useAuthStore } from '../store';
 
 // Haberler (News) Yönetimi
 import NewsList from '../views/news/NewsList.vue';
-import NewsForm from '../views/news/NewsForm.vue';
+//import NewsForm from '../views/news/NewsForm.vue';
 
 // Duyurular (Announcements) Yönetimi
 import AnnouncementList from '../views/announcements/AnnouncementList.vue';
@@ -39,13 +39,13 @@ const routes = [
             {
                 path: 'news/create',
                 name: 'CreateNews',
-                component: NewsForm,
+              //  component: NewsForm,
                 meta: { requiresAuth: true, roles: ['ADMIN'] },
             },
             {
                 path: 'news/edit/:id',
                 name: 'EditNews',
-                component: NewsForm,
+               // component: NewsForm,
                 meta: { requiresAuth: true, roles: ['ADMIN'] },
             },
             {
