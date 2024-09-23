@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         // Permit authentication endpoints
                         .requestMatchers("/api/auth/token", "/api/auth/**").permitAll()
+                        .requestMatchers("/uploads/images/**").permitAll()
                         // Permit public news and announcement endpoints
                         .requestMatchers("/api/news/valid", "/api/news/{id}").permitAll()
                         .requestMatchers("/api/announcement/valid", "/api/announcement/{id}").permitAll()
@@ -66,23 +67,21 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Allow both localhost and 127.0.0.1 with specified port
+
         configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5173",
                 "http://localhost:5173","http://127.0.0.1:5174","http://localhost:5174"));
 
-        // Allow specific HTTP methods
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
-        // Allow all headers
+
         configuration.setAllowedHeaders(Collections.singletonList("*"));
 
-        // Allow credentials (cookies, authorization headers, etc.)
+
         configuration.setAllowCredentials(true);
 
-        // Set the max age to cache preflight response
+     
         configuration.setMaxAge(3600L);
 
-        // Apply the configuration to all API endpoints
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", configuration);
 
