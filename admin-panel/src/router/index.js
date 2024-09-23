@@ -1,30 +1,78 @@
 // src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
-import ManageNews from '../components/ManageNews.vue';
-import ManageAnnouncements from '../components/ManageAnnouncements.vue';
-import NewsDetail from '../components/NewsDetail.vue';
-import Login from '../components/Login.vue';
-import { useAuthStore } from '@/stores/auth';
+import Login from '../views/Login.vue';
+import AdminDashboard from '../views/AdminDashboard.vue';
+import NotFound from '../views/NotFound.vue';
+import { useAuthStore } from '../store';
+
+// Haberler (News) Yönetimi
+import NewsList from '../views/news/NewsList.vue';
+import NewsForm from '../views/news/NewsForm.vue';
+
+// Duyurular (Announcements) Yönetimi
+import AnnouncementList from '../views/announcements/AnnouncementList.vue';
+import AnnouncementForm from '../views/announcements/AnnouncementForm.vue';
 
 const routes = [
     {
-        path: '/news',
-        component: ManageNews,
-        meta: { requiresAuth: true, roles: ['ADMIN'] }
+        path: '/',
+        name: 'Home',
+        redirect: '/admin',
     },
     {
-        path: '/news/:id',
-        component: NewsDetail,
-        meta: { requiresAuth: true, roles: ['ADMIN'] }
+        path: '/login',
+        name: 'Login',
+        component: Login,
     },
     {
-        path: '/announcements',
-        component: ManageAnnouncements,
-        meta: { requiresAuth: true, roles: ['ADMIN'] }
+        path: '/admin',
+        name: 'AdminDashboard',
+        component: AdminDashboard,
+        meta: { requiresAuth: true, roles: ['ADMIN'] },
+        children: [
+            {
+                path: 'news',
+                name: 'NewsList',
+                component: NewsList,
+                meta: { requiresAuth: true, roles: ['ADMIN'] },
+            },
+            {
+                path: 'news/create',
+                name: 'CreateNews',
+                component: NewsForm,
+                meta: { requiresAuth: true, roles: ['ADMIN'] },
+            },
+            {
+                path: 'news/edit/:id',
+                name: 'EditNews',
+                component: NewsForm,
+                meta: { requiresAuth: true, roles: ['ADMIN'] },
+            },
+            {
+                path: 'announcements',
+                name: 'AnnouncementList',
+                component: AnnouncementList,
+                meta: { requiresAuth: true, roles: ['ADMIN'] },
+            },
+            {
+                path: 'announcements/create',
+                name: 'CreateAnnouncement',
+                component: AnnouncementForm,
+                meta: { requiresAuth: true, roles: ['ADMIN'] },
+            },
+            {
+                path: 'announcements/edit/:id',
+                name: 'EditAnnouncement',
+                component: AnnouncementForm,
+                meta: { requiresAuth: true, roles: ['ADMIN'] },
+            },
+        ],
     },
-    { path: '/login', component: Login },
-    { path: '/', redirect: '/news' },
-    // Diğer rotalar
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: NotFound,
+    },
 ];
 
 const router = createRouter({
@@ -32,16 +80,16 @@ const router = createRouter({
     routes,
 });
 
-// Global Route Guard
+// Route Guard
 router.beforeEach((to, from, next) => {
     const authStore = useAuthStore();
+    authStore.initialize();
 
     if (to.meta.requiresAuth) {
         if (!authStore.isAuthenticated) {
-            authStore.clearToken(); // Token süresi dolmuşsa temizle
-            next({ path: '/login', query: { redirect: to.fullPath } });
+            next({ name: 'Login' });
         } else if (to.meta.roles && !to.meta.roles.some(role => authStore.userRoles.includes(role))) {
-            next({ path: '/' }); // Yetkiniz yoksa ana sayfaya yönlendir
+            next({ name: 'NotFound' });
         } else {
             next();
         }
