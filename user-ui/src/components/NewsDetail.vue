@@ -10,7 +10,8 @@
 </template>
 
 <script>
-import {getNewsById} from '../api/newsApi.js';
+import { getNewsById } from '../api/newsApi.js';
+import DateFormatter from '../utils/DateFormatter';
 
 export default {
   data() {
@@ -22,12 +23,21 @@ export default {
   async mounted() {
     const newsId = this.$route.params.id;
     try {
-      this.news = await getNewsById(newsId);
+      let newsData = await getNewsById(newsId);
+
+
+      if (newsData.validityDate) {
+        const formatter = new DateFormatter(newsData.validityDate);
+        newsData.validityDate = formatter.getFormattedDate();
+      }
+
+      this.news = newsData;
     } catch (error) {
       this.errorMessage = 'Haber bulunamadı.';
     }
   }
 };
+
 </script>
 
 <style scoped>
