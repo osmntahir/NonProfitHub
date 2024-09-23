@@ -3,12 +3,12 @@ import axios from 'axios';
 import { useAuthStore } from '../store';
 import { getActivePinia } from 'pinia';
 
-// Axios istemcisi oluşturun
+
 const api = axios.create({
-    baseURL: 'http://localhost:8080/api', // Backend API URL'inizi buraya yazın
+    baseURL: 'http://localhost:8080/api',
 });
 
-// İsteklerden önce token'ı ekleyin
+
 api.interceptors.request.use((config) => {
     const pinia = getActivePinia();
     if (pinia) {
@@ -25,7 +25,7 @@ api.interceptors.request.use((config) => {
     return Promise.reject(error);
 });
 
-// Yanıt hatalarını yakalayın
+
 api.interceptors.response.use((response) => response, (error) => {
     if (error.response && error.response.status === 401) {
         const pinia = getActivePinia();

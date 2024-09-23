@@ -11,7 +11,7 @@ import NewsList from '../views/news/NewsList.vue';
 
 // Duyurular (Announcements) Yönetimi
 import AnnouncementList from '../views/announcements/AnnouncementList.vue';
-import AnnouncementForm from '../views/announcements/AnnouncementForm.vue';
+
 
 const routes = [
     {
@@ -57,13 +57,13 @@ const routes = [
             {
                 path: 'announcements/create',
                 name: 'CreateAnnouncement',
-                component: AnnouncementForm,
+            //  component: AnnouncementForm,
                 meta: { requiresAuth: true, roles: ['ADMIN'] },
             },
             {
                 path: 'announcements/edit/:id',
                 name: 'EditAnnouncement',
-                component: AnnouncementForm,
+              //  component: AnnouncementForm,
                 meta: { requiresAuth: true, roles: ['ADMIN'] },
             },
         ],

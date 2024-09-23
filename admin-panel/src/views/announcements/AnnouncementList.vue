@@ -18,13 +18,13 @@
         <tbody>
         <tr v-for="announcement in announcementList" :key="announcement.id">
           <td class="id-column">{{ announcement.id }}</td>
-          <td class="wrap-text">{{ announcement.konu }}</td>
-          <td class="wrap-text">{{ announcement.icerik }}</td>
-          <td>{{ formatDate(announcement.gecerlilikTarihi) }}</td>
+          <td class="wrap-text">{{ announcement.subject }}</td>
+          <td class="wrap-text">{{ announcement.content }}</td>
+          <td>{{ formatDate(announcement.validityDate) }}</td>
           <td>
             <img
                 v-if="announcement.imagePath"
-                :src="`http://localhost:8080/uploads/images/${announcement.imagePath}`"
+                :src="`http://localhost:8080/${announcement.imagePath}`"
                 alt="Resim"
                 width="100"
             />
@@ -45,19 +45,19 @@
         <h3>{{ modalType === 'create' ? 'Yeni Duyuru Ekle' : 'Duyuru Düzenle' }}</h3>
         <form @submit.prevent="submitForm" enctype="multipart/form-data">
           <div class="form-group">
-            <label for="konu">Konu:</label>
-            <input v-model="form.konu" type="text" id="konu" required />
+            <label for="subject">Konu:</label>
+            <input v-model="form.subject" type="text" id="subject" required />
           </div>
           <div class="form-group">
-            <label for="icerik">İçerik:</label>
-            <textarea v-model="form.icerik" id="icerik" required></textarea>
+            <label for="content">İçerik:</label>
+            <textarea v-model="form.content" id="content" required></textarea>
           </div>
           <div class="form-group">
-            <label for="gecerlilikTarihi">Geçerlilik Tarihi:</label>
+            <label for="validityDate">Geçerlilik Tarihi:</label>
             <input
-                v-model="form.gecerlilikTarihi"
+                v-model="form.validityDate"
                 type="date"
-                id="gecerlilikTarihi"
+                id="validityDate"
                 :min="todayDate"
                 required
             />
@@ -69,7 +69,6 @@
                 type="file"
                 id="image"
                 accept="image/*"
-                :required="false"
             />
             <div v-if="existingImage">
               <p>Mevcut Resim:</p>
@@ -105,9 +104,9 @@ export default {
     const modalType = ref('create'); // 'create' veya 'edit'
     const form = ref({
       id: null,
-      konu: '',
-      icerik: '',
-      gecerlilikTarihi: '',
+      subject: '',
+      content: '',
+      validityDate: '',
     });
     const imageFile = ref(null);
     const existingImage = ref(null);
@@ -116,10 +115,11 @@ export default {
 
     const fetchAnnouncements = async () => {
       try {
-        const response = await api.get('/announcement');
+        const response = await api.get('/announcement'); // /api baseURL + /announcement
         announcementList.value = response.data;
       } catch (err) {
         console.error('Duyuruları çekerken hata:', err);
+        error.value = 'Duyuruları çekerken bir hata oluştu.';
       }
     };
 
@@ -128,8 +128,10 @@ export default {
         try {
           await api.delete(`/announcement/${id}`);
           announcementList.value = announcementList.value.filter(a => a.id !== id);
+          alert('Duyuru başarıyla silindi.');
         } catch (err) {
           console.error('Duyuru silinirken hata:', err);
+          error.value = 'Duyuru silinirken bir hata oluştu.';
         }
       }
     };
@@ -144,17 +146,17 @@ export default {
       if (type === 'edit' && announcement) {
         form.value = {
           id: announcement.id,
-          konu: announcement.konu,
-          icerik: announcement.icerik,
-          gecerlilikTarihi: announcement.gecerlilikTarihi.split('T')[0], // YYYY-MM-DD format
+          subject: announcement.subject,
+          content: announcement.content,
+          validityDate: announcement.validityDate.split('T')[0], // YYYY-MM-DD format
         };
         existingImage.value = announcement.imagePath;
       } else {
         form.value = {
           id: null,
-          konu: '',
-          icerik: '',
-          gecerlilikTarihi: '',
+          subject: '',
+          content: '',
+          validityDate: '',
         };
         existingImage.value = null;
       }
@@ -174,11 +176,11 @@ export default {
     const submitForm = async () => {
       try {
         const formData = new FormData();
-        formData.append('announcement', JSON.stringify({
-          konu: form.value.konu,
-          icerik: form.value.icerik,
-          gecerlilikTarihi: form.value.gecerlilikTarihi,
-        }));
+        formData.append('announcement', new Blob([JSON.stringify({
+          subject: form.value.subject,
+          content: form.value.content,
+          validityDate: form.value.validityDate,
+        })], { type: 'application/json' }));
         if (imageFile.value) {
           formData.append('image', imageFile.value);
         }
@@ -206,7 +208,11 @@ export default {
         closeModal();
       } catch (err) {
         console.error('Duyuru kaydedilirken hata:', err);
-        error.value = 'Duyuru kaydedilirken hata oluştu.';
+        if (err.response && err.response.data) {
+          error.value = err.response.data;
+        } else {
+          error.value = 'Duyuru kaydedilirken bir hata oluştu.';
+        }
       }
     };
 
@@ -234,6 +240,7 @@ export default {
 </script>
 
 <style scoped>
+/* Stil Kodları Aynı Kalacak */
 .announcement-list {
   padding: 1rem;
 }
