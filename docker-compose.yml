@@ -12,6 +12,33 @@ services:
       - "5430:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1.1
+    container_name: keycloak
+    environment:
+      DB_VENDOR: postgres
+      DB_ADDR: db
+      DB_DATABASE: keycloak_db
+      DB_USER: postgres
+      DB_PASSWORD: 9414
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin123
+    ports:
+      - "9090:8080"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    depends_on:
+      db:
+        condition: service_healthy
+    command: start-dev
 
 volumes:
   postgres_data:
+  keycloak_data:

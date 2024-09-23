@@ -4,12 +4,13 @@ import com.cmvbilisim.contextmanager.model.Announcement;
 import com.cmvbilisim.contextmanager.service.AnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/api/announcement")
@@ -18,10 +19,12 @@ public class AnnouncementController {
     @Autowired
     private AnnouncementService announcementService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<Announcement>> getAllAnnouncements() {
         return ResponseEntity.ok(announcementService.getAllAnnouncements());
     }
+
     @GetMapping("/valid")
     public ResponseEntity<List<Announcement>> getValidAnnouncements() {
 
@@ -36,7 +39,7 @@ public class AnnouncementController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<?> addAnnouncement(
             @RequestPart("announcement") Announcement announcement,
@@ -48,7 +51,7 @@ public class AnnouncementController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAnnouncement(
             @PathVariable Long id,
@@ -61,7 +64,7 @@ public class AnnouncementController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAnnouncement(@PathVariable Long id) {
         try {
