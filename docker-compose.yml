@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres
@@ -38,6 +36,44 @@ services:
       db:
         condition: service_healthy
     command: start-dev
+
+
+  context-manager:
+    build:
+      context: ./context-manager
+      dockerfile: Dockerfile
+    container_name: context-manager
+    ports:
+      - "8080:8080"
+    environment:
+        SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      keycloak:
+        condition: service_started
+      db:
+        condition: service_healthy
+
+  admin-panel:
+    build:
+      context: ./admin-panel
+      dockerfile: Dockerfile
+    container_name: admin-panel
+    ports:
+      - "3000:5000"
+    depends_on:
+      context-manager:
+        condition: service_started
+
+  user-ui:
+    build:
+      context: ./user-ui
+      dockerfile: Dockerfile
+    container_name: user-ui
+    ports:
+      - "3001:5000"
+    depends_on:
+      context-manager:
+        condition: service_started
 
 volumes:
   postgres_data:
