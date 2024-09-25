@@ -42,7 +42,8 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public Optional<NewsDTO> getNewsById(Long id) {
         logger.info("Fetching news with ID {}", id);
-        Optional<NewsDTO> newsDTO = newsRepository.findById(id)
+        LocalDate today = LocalDate.now();
+        Optional<NewsDTO> newsDTO = newsRepository.findByIdAndValidityDateGreaterThanEqual(id,today)
                 .map(newsMapper::toDTO);
         if (newsDTO.isPresent()) {
             logger.debug("News found: {}", newsDTO.get().getSubject());
