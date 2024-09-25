@@ -1,11 +1,25 @@
+<!-- src/components/NewsDetail.vue -->
 <template>
-  <div v-if="news" class="news-container">
-    <h1 class="news-title">{{ news.subject }}</h1>
-    <p class="news-content">{{ news.content }}</p>
-    <p class="news-validity"><strong>Geçerlilik Tarihi:</strong> {{ news.validityDate }}</p>
-  </div>
-  <div v-else class="error-container">
-    <p class="error-message">{{ errorMessage }}</p>
+  <div class="news-detail">
+    <div v-if="news" class="news-container">
+      <h1 class="news-title">{{ news.subject }}</h1>
+      <img
+          v-if="news.imagePath"
+          :src="getImageUrl(news.imagePath)"
+          alt="Haber Resmi"
+          class="news-image"
+      />
+      <p class="news-content">{{ news.content }}</p>
+      <p class="news-validity">
+        <i class="fas fa-calendar-alt"></i>
+        <strong>Geçerlilik Tarihi:</strong> {{ news.validityDate }}
+      </p>
+      <router-link to="/news" class="back-button">Geri Dön</router-link>
+    </div>
+    <div v-else class="error-container">
+      <p class="error-message">{{ errorMessage }}</p>
+      <router-link to="/" class="home-button">Anasayfaya Dön</router-link>
+    </div>
   </div>
 </template>
 
@@ -14,17 +28,18 @@ import { getNewsById } from '../api/newsApi.js';
 import DateFormatter from '../utils/DateFormatter';
 
 export default {
+  name: 'NewsDetail',
+  props: ['id'],
   data() {
     return {
       news: null,
-      errorMessage: ''
+      errorMessage: '',
     };
   },
-  async mounted() {
+  async created() {
     const newsId = this.$route.params.id;
     try {
       let newsData = await getNewsById(newsId);
-
 
       if (newsData.validityDate) {
         const formatter = new DateFormatter(newsData.validityDate);
@@ -35,66 +50,132 @@ export default {
     } catch (error) {
       this.errorMessage = 'Haber bulunamadı.';
     }
-  }
+  },
+  methods: {
+    getImageUrl(imagePath) {
+      return `http://localhost:8080/uploads/images/${imagePath.split('/').pop()}`;
+    },
+  },
 };
-
 </script>
 
 <style scoped>
-.news-container, .error-container {
+.news-detail {
+  width: 90%;
   max-width: 800px;
-  margin: 0 auto;
-  padding: 40px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  margin: 60px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-body {
-  font-family: 'Roboto', sans-serif;
+.news-container {
+  text-align: center;
 }
 
 .news-title {
   font-size: 2.8em;
   font-weight: 700;
-  color: #222;
-  margin-bottom: 30px;
-  word-break: break-word;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-family: 'Roboto', sans-serif;
+  position: relative;
+
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+.news-title::after {
+  content: '';
+  width: 80px;
+  height: 4px;
+  background: #e74c3c;
+  display: block;
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+.news-image {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+  transition: transform 0.3s;
+}
+
+.news-image:hover {
+  transform: scale(1.02);
 }
 
 .news-content {
   font-size: 1.6em;
   line-height: 1.8;
-  color: #444;
-  font-weight: 400;
+  color: #555;
+  font-family: 'Open Sans', sans-serif;
   margin-bottom: 20px;
-  word-break: break-word;
+  text-align: left;
+
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
 }
 
 .news-validity {
   font-size: 1.3em;
-  color: #555;
-  margin-bottom: 20px;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.news-link {
-  font-size: 1.3em;
-  color: #007bff;
-  font-weight: 600;
+.news-validity i {
+  margin-right: 8px;
+  color: #e74c3c;
+}
+
+.back-button,
+.home-button {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: #ffffff;
   text-decoration: none;
-  word-wrap: break-word;
+  border-radius: 25px;
+  transition: background-color 0.3s, transform 0.3s;
+  font-family: 'Open Sans', sans-serif;
 }
 
-.news-link:hover {
-  text-decoration: underline;
-  color: #0056b3;
+.back-button:hover,
+.home-button:hover {
+  background-color: #2980b9;
+  transform: scale(1.05);
+}
+
+.error-container {
+  text-align: center;
+  padding: 60px 20px;
 }
 
 .error-message {
   font-size: 1.5em;
   color: #ff4d4f;
-  text-align: center;
-  margin-top: 50px;
+  font-family: 'Open Sans', sans-serif;
+  margin-bottom: 20px;
+}
+
+
+@media (max-width: 600px) {
+  .news-title {
+    font-size: 2.2em;
+  }
+
+  .news-content {
+    font-size: 1.4em;
+  }
 }
 </style>

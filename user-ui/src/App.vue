@@ -1,35 +1,35 @@
+<!-- src/App.vue -->
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Anasayfa</router-link>
-      <router-link to="/news">Haberler</router-link>
-      <router-link to="/announcements">Duyurular</router-link>
-    </nav>
-    <router-view></router-view>
+    <Navbar />
+    <main>
+      <router-view></router-view>
+    </main>
+    <footer>
+      <p>&copy; 2024 CMV Bilişim. Tüm hakları saklıdır.</p>
+    </footer>
   </div>
 </template>
 
 <script>
+import Navbar from "@/components/Navbar.vue";
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    Navbar,
+  },
 };
 </script>
 
 <style scoped>
-nav {
+#app {
   display: flex;
-  gap: 20px;
-  background-color: #333;
-  padding: 10px;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-nav a {
-  color: white;
-  text-decoration: none;
-  padding: 10px;
-}
-
-nav a:hover {
-  background-color: #555;
+main {
+  flex: 1;
 }
 </style>

@@ -1,23 +1,28 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080/api/news';
-
-export const getAllNews = async () => {
+// src/api/newsApi.js
+export async function getAllNews() {
     try {
-        const response = await axios.get(`${API_URL}/valid`);
-        return response.data;
+        const response = await fetch('http://localhost:8080/api/news/valid');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        return data;
     } catch (error) {
         console.error('Error fetching news:', error);
         return [];
     }
-};
+}
 
-export const getNewsById = async (id) => {
+export async function getNewsById(id) {
     try {
-        const response = await axios.get(`${API_URL}/${id}`);
-        return response.data;
+        const response = await fetch(`http://localhost:8080/api/news/${id}`);
+        if (!response.ok) {
+            throw new Error('News not found');
+        }
+        const data = await response.json();
+        return data;
     } catch (error) {
-        console.error(`Error fetching news with id ${id}:`, error);
-        return null;
+        console.error('Error fetching news:', error);
+        throw error;
     }
-};
+}

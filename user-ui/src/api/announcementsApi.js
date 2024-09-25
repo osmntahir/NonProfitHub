@@ -1,13 +1,14 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080/api/announcement';
-
-export const getAllAnnouncements = async () => {
+// src/api/announcementsApi.js
+export async function getAllAnnouncements() {
     try {
-        const response = await axios.get(`${API_URL}/valid`);
-        return response.data;
+        const response = await fetch('http://localhost:8080/api/announcement/valid');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        return data;
     } catch (error) {
         console.error('Error fetching announcements:', error);
         return [];
     }
-};
+}

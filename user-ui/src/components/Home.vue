@@ -1,9 +1,10 @@
 <template>
   <div class="home">
     <div class="parallax">
+      <div class="overlay"></div>
       <div class="content">
-        <h1 class="fade-in">Derneğimize Hoş Geldiniz</h1>
-        <p class="fade-in">En son haberler ve duyurular için sitemizi takip edin.</p>
+        <h1>{{ welcomeMessage }}</h1>
+        <p>{{ followMessage }}</p>
         <div class="buttons">
           <router-link to="/news" class="btn">Haberler</router-link>
           <router-link to="/announcements" class="btn">Duyurular</router-link>
@@ -15,109 +16,171 @@
 
 <script>
 export default {
-  name: 'Home'
+  name: 'Home',
+  data() {
+    return {
+      welcomeMessage: '',
+      followMessage: '',
+      originalWelcomeMessage: 'Derneğimize Hoş Geldiniz',
+      originalFollowMessage: 'En son haberler ve duyurular için sitemizi takip edin.',
+      intervalId: null, // Interval ID'yi saklamak için
+      typingSpeed: 50, // Karakter ekleme hızı (milisaniye)
+    };
+  },
+  mounted() {
+    this.animateText();
+  },
+  beforeDestroy() {
+    // Bileşen yok edilirken interval'i temizleyin
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+  },
+  methods: {
+    animateText() {
+      let welcomeIndex = 0;
+      let followIndex = 0;
+      const welcomeLength = this.originalWelcomeMessage.length;
+      const followLength = this.originalFollowMessage.length;
+
+      this.intervalId = setInterval(() => {
+        if (welcomeIndex < welcomeLength) {
+          this.welcomeMessage += this.originalWelcomeMessage[welcomeIndex];
+          welcomeIndex++;
+          console.log('Welcome Message:', this.welcomeMessage);
+        } else if (followIndex < followLength) {
+          this.followMessage += this.originalFollowMessage[followIndex];
+          followIndex++;
+          console.log('Follow Message:', this.followMessage);
+        } else {
+          clearInterval(this.intervalId);
+          this.intervalId = null;
+        }
+      }, this.typingSpeed); // Hızı data üzerinden kontrol ediyoruz
+    },
+  },
 };
 </script>
 
 <style scoped>
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden;
-}
-
 .home {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  width: 100%;
-}
-
-.parallax {
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://example.com/your-image.jpg') no-repeat center center;
-  background-size: cover;
-  height: 100vh;
-  width: 100vw;
+  height: calc(100vh - 60px); /* Navbar yüksekliğini çıkarın */
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  margin: 0;
-  padding: 0;
+}
+
+.parallax {
+  background-image: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0');
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  animation: parallaxScroll 20s linear infinite;
+}
+
+@keyframes parallaxScroll {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50px);
+  }
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(44, 62, 80, 0.6);
+  z-index: 1;
 }
 
 .content {
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 50px;
-  border-radius: 20px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  max-width: 600px;
+  position: relative;
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 60px 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  max-width: 700px;
+  text-align: center;
 }
 
 h1 {
-  font-size: 3.2em;
-  font-weight: bold;
+  font-size: 3em;
+  font-weight: 700;
   margin-bottom: 20px;
   color: #2ecc71;
-  animation: fadeIn 2s ease-in;
+  font-family: 'Roboto', sans-serif;
+  animation: fadeIn 1.5s ease-in-out forwards;
+  opacity: 0; /* Başlangıçta gizli */
 }
 
 p {
-  font-size: 1.4em;
+  font-size: 1.3em;
   margin-bottom: 30px;
   color: #34495e;
-  animation: fadeIn 3s ease-in;
+  font-family: 'Open Sans', sans-serif;
+  animation: fadeIn 2s ease-in-out forwards;
+  opacity: 0; /* Başlangıçta gizli */
 }
 
 .buttons {
   display: flex;
   justify-content: center;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .btn {
-  padding: 12px 24px;
+  padding: 15px 30px;
   font-size: 1.2em;
-  color: white;
+  color: #ffffff;
   background-color: #e74c3c;
-  border-radius: 8px;
+  border: none;
+  border-radius: 25px;
   text-decoration: none;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s, transform 0.3s;
+  box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
 }
 
 .btn:hover {
   background-color: #c0392b;
+  transform: scale(1.05);
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
+/* Responsive */
 @media (max-width: 768px) {
+  .content {
+    padding: 40px 20px;
+  }
+
   h1 {
-    font-size: 2.4em;
+    font-size: 2.2em;
   }
 
   p {
-    font-size: 1.2em;
+    font-size: 1.1em;
   }
 
   .btn {
     font-size: 1em;
-    padding: 10px 20px;
+    padding: 12px 24px;
   }
 }
 </style>
