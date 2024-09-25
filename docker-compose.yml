@@ -3,14 +3,14 @@ services:
     image: postgres
     container_name: postgres-db
     environment:
-      POSTGRES_DB: cmvbilisim_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 9414
+      POSTGRES_DB: cmvbilisim_db
     ports:
       - "5430:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres-init:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -28,15 +28,17 @@ services:
       DB_PASSWORD: 9414
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin123
+      # Fix for KEYCLOAK_IMPORT variable
+      KEYCLOAK_IMPORT: /opt/keycloak/data/import
     ports:
       - "9090:8080"
     volumes:
       - keycloak_data:/opt/keycloak/data
+      - ./keycloak-import:/opt/keycloak/data/import
     depends_on:
       db:
         condition: service_healthy
-    command: start-dev
-
+    command: start-dev --import-realm
 
   context-manager:
     build:
@@ -46,7 +48,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-        SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: docker
     depends_on:
       keycloak:
         condition: service_started

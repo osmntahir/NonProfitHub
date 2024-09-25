@@ -1,0 +1,40 @@
+{
+  "realm" : "cmv_realm",
+  "users" : [ {
+    "id" : "6196fc2a-0af9-4111-8fe5-aa2103c5324a",
+    "createdTimestamp" : 1727242290795,
+    "username" : "admin",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "",
+    "lastName" : "",
+    "credentials" : [ {
+      "id" : "fbab68cd-0dab-40fe-b38e-50689eeb0b3f",
+      "type" : "password",
+      "userLabel" : "My password",
+      "createdDate" : 1727242302044,
+      "secretData" : "{\"value\":\"/AU0s8TDd62iNVLy8kGt8lhGFQMx7L5KEPxPa1dT3qo=\",\"salt\":\"bTy9AKgyaGkBhqsk7ugG0w==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\",\"additionalParameters\":{}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "ADMIN", "default-roles-cmv_realm" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "f8ec1ae9-7c94-4132-ae01-23b3e61c4384",
+    "createdTimestamp" : 1727242283456,
+    "username" : "service-account-cmv_client",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "serviceAccountClientId" : "cmv_client",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-cmv_realm" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  } ]
+}
