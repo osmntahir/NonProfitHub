@@ -1,21 +1,21 @@
-<!-- src/views/Login.vue -->
 <template>
   <div class="login-container">
-    <h2>Login</h2>
+    <h2>Giriş Yap</h2>
     <form @submit.prevent="handleLogin">
       <div>
-        <label for="username">Username:</label>
+        <label for="username">Kullanıcı Adı:</label>
         <input v-model="username" type="text" id="username" required />
       </div>
       <div>
-        <label for="password">Password:</label>
+        <label for="password">Şifre:</label>
         <input v-model="password" type="password" id="password" required />
       </div>
-      <button type="submit">Login</button>
+      <button type="submit">Giriş Yap</button>
       <p v-if="error" class="error">{{ error }}</p>
     </form>
   </div>
 </template>
+
 <script>
 import { ref } from 'vue';
 import api from '../services/api';
@@ -39,8 +39,8 @@ export default {
           },
         });
 
-        // Token'ı doğru alıp almadığınızı kontrol edin
-        console.log('Login Yanıtı:', response.data);
+        // Token'ın doğru alınıp alınmadığını kontrol edin
+        console.log('Giriş Yanıtı:', response.data);
 
         const token = response.data.access_token;
 
@@ -51,7 +51,7 @@ export default {
           throw new Error('Token bulunamadı');
         }
       } catch (err) {
-        console.error('Login hatası:', err);
+        console.error('Giriş hatası:', err);
         error.value = 'Geçersiz kullanıcı adı veya şifre';
       }
     };
@@ -65,7 +65,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped>
 .login-container {

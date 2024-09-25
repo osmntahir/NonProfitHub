@@ -1,13 +1,12 @@
-<!-- src/components/Navbar.vue -->
 <template>
   <nav>
-    <router-link to="/">Home</router-link>
+    <router-link to="/">Ana Sayfa</router-link>
     <template v-if="isAuthenticated">
-      <span>Welcome, {{"admin"}}</span>
-      <button @click="logoutUser">Logout</button>
+      <span>Hoşgeldiniz, {{"Admin"}}</span>
+      <button @click="logoutUser">Çıkış Yap</button>
     </template>
     <template v-else>
-      <router-link to="/login">Login</router-link>
+      <router-link to="/login">Giriş Yap</router-link>
     </template>
   </nav>
 </template>
@@ -24,7 +23,7 @@ export default {
     const router = useRouter();
 
     const isAuthenticated = computed(() => authStore.isAuthenticated);
-    const user = computed(() => authStore.user);
+    const user = computed(() => authStore.user || 'Kullanıcı');
 
     const logoutUser = () => {
       authStore.logout();

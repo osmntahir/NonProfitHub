@@ -1,10 +1,9 @@
-<!-- src/views/AdminDashboard.vue -->
 <template>
   <div class="admin-dashboard">
-    <h1>Admin Dashboard</h1>
+    <h1>Yönetici Kontrol Paneli</h1>
     <div class="sections">
-      <router-link to="/admin/news">Manage News</router-link>
-      <router-link to="/admin/announcements">Manage Announcements</router-link>
+      <router-link to="/admin/news">Haberleri Yönet</router-link>
+      <router-link to="/admin/announcements">Duyuruları Yönet</router-link>
     </div>
     <router-view />
   </div>

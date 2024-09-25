@@ -9,11 +9,12 @@
         <router-link to="/">Anasayfa</router-link>
       </li>
       <li>
-        <router-link to="/announcements">Duyurular</router-link>
-      </li>
-      <li>
         <router-link to="/news">Haberler</router-link>
       </li>
+      <li>
+        <router-link to="/announcements">Duyurular</router-link>
+      </li>
+
     </ul>
     <div class="hamburger" @click="toggleMenu">
       <span :class="{ 'change': isOpen }"></span>

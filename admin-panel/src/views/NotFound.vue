@@ -1,8 +1,7 @@
-<!-- src/views/NotFound.vue -->
 <template>
   <div class="not-found">
-    <h2>404 - Page Not Found</h2>
-    <router-link to="/">Go to Home</router-link>
+    <h2>404 - Sayfa Bulunamadı</h2>
+    <router-link to="/">Ana Sayfaya Git</router-link>
   </div>
 </template>
 
