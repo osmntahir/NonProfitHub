@@ -24,7 +24,7 @@
           <td>
             <img
                 v-if="announcement.imagePath"
-                :src="`http://localhost:8080/${announcement.imagePath}`"
+                :src="getImageUrl(announcement.imagePath)"
                 alt="Resim"
                 width="100"
             />
@@ -73,7 +73,7 @@
             <div v-if="existingImage">
               <p>Mevcut Resim:</p>
               <img
-                  :src="`http://localhost:8080/uploads/images/${existingImage}`"
+                  :src="getImageUrl(existingImage)"
                   alt="Resim"
                   width="100"
               />
@@ -216,6 +216,9 @@ export default {
       }
     };
 
+    const getImageUrl = (imagePath) => {
+      return `http://localhost:8080/uploads/images/${imagePath.split('/').pop()}`;
+    };
     onMounted(() => {
       fetchAnnouncements();
     });
@@ -234,10 +237,12 @@ export default {
       existingImage,
       error,
       todayDate,
+      getImageUrl,
     };
   },
 };
 </script>
+
 
 <style scoped>
 /* Stil Kodları Aynı Kalacak */

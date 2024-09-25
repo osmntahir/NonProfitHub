@@ -7,6 +7,7 @@ import com.cmvbilisim.contextmanager.repository.AnnouncementRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class AnnouncementServiceImpl implements AnnouncementService {
+
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
     private static final Logger logger = LoggerFactory.getLogger(AnnouncementServiceImpl.class);
 
@@ -60,7 +64,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
                     throw new RuntimeException("Geçersiz dosya türü. Sadece JPG, PNG, JPEG dosyaları kabul edilir.");
                 }
 
-                Path uploadPath = Paths.get("uploads/images/");
+                Path uploadPath = Paths.get(uploadDir);
                 if (!Files.exists(uploadPath)) {
                     Files.createDirectories(uploadPath);
                     logger.debug("Created upload directory at {}", uploadPath.toString());
@@ -106,23 +110,23 @@ public class AnnouncementServiceImpl implements AnnouncementService {
                     throw new RuntimeException("Geçersiz dosya türü. Sadece JPG, PNG, JPEG dosyaları kabul edilir.");
                 }
 
-                Path uploadPath = Paths.get("uploads/images/");
+                Path uploadPath = Paths.get(uploadDir);
                 if (!Files.exists(uploadPath)) {
                     Files.createDirectories(uploadPath);
-                    logger.debug("Created upload directory at {}", uploadPath.toString());
+                    logger.debug("Created upload directory at {}", uploadDir);
                 }
                 Path filePath = uploadPath.resolve(fileName);
                 Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
                 logger.info("Image saved at {}", filePath.toString());
 
-                // Eski resmi sil
+                // Delete the old image if it exists
                 if (existingAnnouncement.getImagePath() != null && !existingAnnouncement.getImagePath().isEmpty()) {
                     Path oldImagePath = Paths.get(existingAnnouncement.getImagePath());
                     Files.deleteIfExists(oldImagePath);
                     logger.info("Old image deleted at {}", oldImagePath.toString());
                 }
 
-                // Yeni resim yolunu güncelle
+                // Update the new image path
                 existingAnnouncement.setImagePath(filePath.toString());
             }
 

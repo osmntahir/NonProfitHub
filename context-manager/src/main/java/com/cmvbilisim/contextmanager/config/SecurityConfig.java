@@ -35,6 +35,7 @@ public class SecurityConfig {
                         // Permit authentication endpoints
                         .requestMatchers("/api/auth/token", "/api/auth/**").permitAll()
                         .requestMatchers("/uploads/images/**").permitAll()
+                        .requestMatchers("/var/uploads/images/**").permitAll()
                         // Permit public news and announcement endpoints
                         .requestMatchers("/api/news/valid", "/api/news/{id}").permitAll()
                         .requestMatchers("/api/announcement/valid", "/api/announcement/{id}").permitAll()
