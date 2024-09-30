@@ -44,11 +44,8 @@ The **Non-Profit News and Announcement Management System** is a web-based platfo
     cd EventPortal
     ```
 
-2. **Configure Environment Variables**
 
-    Ensure that the `.env` file is properly set up with the necessary environment variables. You can create a `.env` file in the root directory of the project based on the provided `.env.example` template.
-
-3. **Build the Backend**
+2. **Build the Backend**
 
     Before running Docker Compose, build the backend application.
 
@@ -58,7 +55,7 @@ The **Non-Profit News and Announcement Management System** is a web-based platfo
     cd ..
     ```
 
-4. **Build and Run the Containers**
+3. **Build and Run the Containers**
 
     Use Docker Compose to build and start all the services defined in the `docker-compose.yml` file.
 
@@ -77,7 +74,7 @@ The **Non-Profit News and Announcement Management System** is a web-based platfo
     - Build the `context-manager`, `admin-panel`, and `user-ui` services from their respective Dockerfiles.
     - Start all services and set up the network.
 
-5. **Accessing the Application**
+4. **Accessing the Application**
 
     Once all containers are up and running, you can access the different parts of the application using the following URLs:
 
@@ -86,7 +83,7 @@ The **Non-Profit News and Announcement Management System** is a web-based platfo
     - **Keycloak Admin Console:** [http://localhost:9090](http://localhost:9090)
     - **Context Manager API:** [http://localhost:8080](http://localhost:8080)
 
-6. **Initial Setup for Keycloak**
+5. **Initial Setup for Keycloak**
 
     The Keycloak server initializes by importing the configuration files located in the `keycloak-import` directory. These files are:
 
@@ -107,7 +104,7 @@ The **Non-Profit News and Announcement Management System** is a web-based platfo
     - **Accessing Admin Panel:**
       - Use the same admin credentials (`admin` / `admin123`) to log into the Admin Panel at [http://localhost:3000](http://localhost:3000).
 
-7. **Database Initialization**
+6. **Database Initialization**
 
     The PostgreSQL container initializes the database using the scripts located in the `./postgres-init` directory. Ensure that any necessary SQL scripts are placed in this directory for proper database setup.
 
